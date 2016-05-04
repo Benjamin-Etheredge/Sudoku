@@ -15,6 +15,7 @@ namespace Sudoku
         public int[,] solutionBoard;
         public int[,] playerBoard;
 
+        public Random randomObject = new Random();
 
         public Sudoku (int difficulty)
         {
@@ -61,6 +62,13 @@ namespace Sudoku
             return isSolved;
         }
 
+        /// <summary>
+        /// Validates input
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="xCor"></param>
+        /// <param name="yCor"></param>
+        /// <returns></returns>
         public bool ValidateInput(int value, int xCor, int yCor)
         {
             bool isValid = false;
@@ -80,22 +88,24 @@ namespace Sudoku
             return isValid;
         }
 
-        public bool CheckSpot(int value, int xCor, int yCor)
+        /// <summary>
+        /// Checks if the players board is correct at corrdinates
+        /// </summary>
+        /// <param name="xCor">x cordinate of spot to check</param>
+        /// <param name="yCor">y cordinate of spot to check</param>
+        /// <returns>Whether that spot is correct or not</returns>
+        public bool CheckSpot(int xCor, int yCor)
         {
-            if (ValidateInput(value, xCor, yCor))
-            { 
-                return this.solutionBoard[xCor, yCor] == value;
-            }
-            
+            return this.solutionBoard[xCor, yCor] == (this.playerBoard[xCor, yCor] * -1);
         }
 
         /// <summary>
-        /// 
+        /// Makes the move designated by user
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="xCor"></param>
-        /// <param name="yCor"></param>
-        /// <returns></returns>
+        /// <param name="value">Value to be added to board</param>
+        /// <param name="xCor">x cordinate of move</param>
+        /// <param name="yCor">y cordinate of move</param>
+        /// <returns>Boolean value of whether the move was valid</returns>
         public bool MakeMove(int value, int xCor, int yCor)
         {
             bool madeMove = false;
@@ -111,6 +121,24 @@ namespace Sudoku
             return madeMove;
         }
 
+
+        public void Help()
+        {
+            bool hasHelped = false;
+
+            while (!hasHelped)
+            {
+                // get new random cordinates
+                int randomX = randomObject.Next(MINIMUM_VALUE, BOARD_SIZE);
+                int randomY = randomObject.Next(MINIMUM_VALUE, BOARD_SIZE);
+
+                if (playerBoard[randomX, randomY] > 0)
+                {
+                    playerBoard[randomX, randomY] = solutionBoard[randomX, randomY];
+                }
+            }
+            
+        }
 
 
 
