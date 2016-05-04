@@ -80,7 +80,7 @@ namespace Sudoku
             {
                 for (int j = 0; j < BOARD_SIZE && isSolved; j++)
                 {
-                    if (Math.Abs(playerBoard[i,j]) != Math.Abs(solutionBoard[i,j]))
+                    if ((Math.Abs(playerBoard[i,j]) != Math.Abs(solutionBoard[i,j])) && (Math.Abs(playerBoard[i, j]) != -Math.Abs(solutionBoard[i, j])))
                     {
                         isSolved = false;
                     }
@@ -139,7 +139,7 @@ namespace Sudoku
             bool madeMove = false;
             if (ValidateInput(value, xCor, yCor))
             {
-                if (playerBoard[xCor, yCor] >= 0)   //has to be >= because empty spots are = 0, unlocked full spots are > 0
+                if (playerBoard[xCor, yCor] >= MINIMUM_VALUE)   //has to be >= because empty spots are = 0, unlocked full spots are > 0
                 {
                     this.playerBoard[xCor, yCor] = value;
                     madeMove = true;

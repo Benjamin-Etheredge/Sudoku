@@ -40,6 +40,7 @@ namespace Sudoku
             }
             gameToolStripMenuItem = new ToolStripMenuItem();
             restartToolStripMenuItem = new ToolStripMenuItem();
+            label5 = new Label();
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
@@ -86,6 +87,8 @@ namespace Sudoku
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.IsSplitterFixed = true;
+            splitContainer1.Panel1.Controls.Add(label5);
             splitContainer1.Panel2.Controls.Add(label4);
             splitContainer1.Panel2.Controls.Add(label3);
             splitContainer1.Panel2.Controls.Add(label2);
@@ -95,15 +98,15 @@ namespace Sudoku
             splitContainer1.Panel2.Controls.Add(radioButton2);
             splitContainer1.Panel2.Controls.Add(radioButton1);
             splitContainer1.Size = new Size(215, 345);
-            splitContainer1.SplitterDistance = 209;
+            splitContainer1.SplitterDistance = 229;
             splitContainer1.TabIndex = 1;
             //
             // boxes
             //
-            int xCoord = 14;
+            int xCoord = 30;
             for (int x = 0; x < 9; x++)
             {
-                int yCoord = 10;
+                int yCoord = 14;
                 for (int y = 0; y < 9; y++)
                 {
                     boxes[x, y].Location = new Point(yCoord, xCoord);
@@ -124,6 +127,17 @@ namespace Sudoku
                 if ((x + 1) % 3 == 0) { xCoord += 3; }
             }
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(39, 12);
+            label5.Name = "label5";
+            label5.Size = new Size(136, 13);
+            label5.TabIndex = 2;
+            label5.Text = "You solved the puzzle!";
+            label5.Visible = false;
+            // 
             // gameToolStripMenuItem
             // 
             gameToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
@@ -137,7 +151,7 @@ namespace Sudoku
             restartToolStripMenuItem.Name = "restartToolStripMenuItem";
             restartToolStripMenuItem.Size = new Size(152, 22);
             restartToolStripMenuItem.Text = "Restart";
-            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
+            restartToolStripMenuItem.Click += new EventHandler(restartToolStripMenuItem_Click);
             // 
             // label4
             // 
@@ -174,7 +188,7 @@ namespace Sudoku
             trackBar1.Size = new Size(104, 45);
             trackBar1.TabIndex = 12;
             trackBar1.Value = 0;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_ValueChanged);
+            trackBar1.Scroll += new EventHandler(trackBar1_ValueChanged);
             // 
             // button1
             // 
@@ -217,7 +231,7 @@ namespace Sudoku
             radioButton1.TabStop = true;
             radioButton1.Text = "Show";
             radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            radioButton1.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
             // 
             // Form1
             // 
@@ -226,8 +240,10 @@ namespace Sudoku
             ClientSize = new Size(215, 369);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             MainMenuStrip = menuStrip1;
             Name = "Form1";
+            Size = new Size(231, 428);
             Text = "Sudoku";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -247,10 +263,10 @@ namespace Sudoku
         /// </summary>
         private void reinitBoxes()
         {
-            int xCoord = 14;
+            int xCoord = 30;
             for (int x = 0; x < 9; x++)
             {
-                int yCoord = 10;
+                int yCoord = 14;
                 for (int y = 0; y < 9; y++)
                 {
                     boxes[x, y] = new MaskedTextBox();
@@ -332,7 +348,13 @@ namespace Sudoku
                     }
                     if (valueInserted) { break; }
                 }
-            }            
+            }
+                if (game.IsSolved())
+            {
+                label5.Visible = true;
+                splitContainer1.Panel1.Refresh();
+                //MessageBox.Show("You solved the puzzle!");
+            }
         }
 
         /// <summary>
