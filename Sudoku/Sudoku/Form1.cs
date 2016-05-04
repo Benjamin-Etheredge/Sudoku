@@ -14,8 +14,11 @@ namespace Sudoku
         private MaskedTextBox[,] boxes = new MaskedTextBox[9,9];
         private bool showHints = false;
 
+        private Sudoku game;
+
         public Form1()
         {
+            game = new Sudoku(0);
             InitializeComponent_withGridCoordinates();
         }
 
@@ -236,29 +239,55 @@ namespace Sudoku
             PerformLayout();
         }
 
+        //When a value is inserted into the board
         private void maskedTextBox_TextChanged(object sender, EventArgs e)
         {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (boxes[i, j].Equals((MaskedTextBox)sender))
+                    {
+                        //set playerBoard[i,j] = input value;
+                    }
+                }
+            }
+
             if (showHints)
             {
                 for(int i=0; i<9; i++)
                 {
+                    bool foundSpot = false;
                     for(int j=0; j<9; j++)
                     {
                         if (boxes[i, j].Equals((MaskedTextBox)sender))
                         {
-                            //if(!checkSpot(Convert.ToInt32(boxes[i,j].Text), i, j))
+                            //if(!checkSpot(i, j))
                             //{
                             boxes[i, j].BackColor = Color.OrangeRed;
                             //}
+                            foundSpot = true;
+                            break;
                         }
+                        if (foundSpot) { break; }
                     }
                 }
             }
         }
 
+        //Force reveal a correct value
         private void Hint_Click(object sender, EventArgs e)
         {
             //call backend random hint
+            //disable revealed spot
+            //call reload playre board
+        }
+
+        //changing difficulties starts a new game with the new difficulty
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            game = new Sudoku(trackBar1.Value);
+            InitializeComponent_withGridCoordinates();
         }
     }
 }
