@@ -16,12 +16,17 @@ namespace Sudoku
 
         private Sudoku game;
 
+        private bool gotHint = false;
+
         public Form1()
         {
             game = new Sudoku(0);
             InitializeComponent_withGridCoordinates();
         }
 
+        /// <summary>
+        /// Setup form and reveal pre-locked values
+        /// </summary>
         private void InitializeComponent_withGridCoordinates()
         {
             menuStrip1 = new MenuStrip();
@@ -34,7 +39,6 @@ namespace Sudoku
                 }
             }
             gameToolStripMenuItem = new ToolStripMenuItem();
-            newToolStripMenuItem = new ToolStripMenuItem();
             restartToolStripMenuItem = new ToolStripMenuItem();
             label4 = new Label();
             label3 = new Label();
@@ -109,9 +113,10 @@ namespace Sudoku
                     boxes[x, y].TabIndex = 97;
                     if (game.playerBoard[x, y] < 0)
                     {
+                        boxes[x, y].Enabled = false;
                         boxes[x, y].Text = (-1 * game.playerBoard[x, y]).ToString();
                     }
-                    boxes[x,y].TextChanged += new EventHandler(maskedTextBox_TextChanged);
+                    boxes[x, y].TextChanged += new EventHandler(maskedTextBox_TextChanged);
                     yCoord += 20;
                     if ((y + 1) % 3 == 0) { yCoord += 3; }
                 }
@@ -122,23 +127,17 @@ namespace Sudoku
             // gameToolStripMenuItem
             // 
             gameToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
-            newToolStripMenuItem,
             restartToolStripMenuItem});
             gameToolStripMenuItem.Name = "gameToolStripMenuItem";
             gameToolStripMenuItem.Size = new Size(50, 20);
             gameToolStripMenuItem.Text = "Game";
-            // 
-            // newToolStripMenuItem
-            // 
-            newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(152, 22);
-            newToolStripMenuItem.Text = "New";
             // 
             // restartToolStripMenuItem
             // 
             restartToolStripMenuItem.Name = "restartToolStripMenuItem";
             restartToolStripMenuItem.Size = new Size(152, 22);
             restartToolStripMenuItem.Text = "Restart";
+            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
             // 
             // label4
             // 
@@ -175,6 +174,7 @@ namespace Sudoku
             trackBar1.Size = new Size(104, 45);
             trackBar1.TabIndex = 12;
             trackBar1.Value = 0;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
             // button1
             // 
@@ -184,6 +184,7 @@ namespace Sudoku
             button1.TabIndex = 11;
             button1.Text = "Hint";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += new EventHandler(Hint_Click);
             // 
             // label1
             // 
@@ -216,6 +217,7 @@ namespace Sudoku
             radioButton1.TabStop = true;
             radioButton1.Text = "Show";
             radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
             // Form1
             // 
@@ -240,55 +242,183 @@ namespace Sudoku
             PerformLayout();
         }
 
-        //When a value is inserted into the board
+        /// <summary>
+        /// Setup a new boxes[,] matrix when difficulty is changed
+        /// </summary>
+        private void reinitBoxes()
+        {
+            int xCoord = 14;
+            for (int x = 0; x < 9; x++)
+            {
+                int yCoord = 10;
+                for (int y = 0; y < 9; y++)
+                {
+                    boxes[x, y] = new MaskedTextBox();
+                    splitContainer1.Panel1.Controls.Add(boxes[x, y]);
+                    boxes[x, y].Location = new Point(yCoord, xCoord);
+                    boxes[x, y].Mask = "0";
+                    boxes[x, y].Name = "maskedTextBox9";
+                    boxes[x, y].Size = new Size(20, 20);
+                    boxes[x, y].TabIndex = 97;
+                    if (game.playerBoard[x, y] < 0)
+                    {
+                        boxes[x, y].Enabled = false;
+                        boxes[x, y].Text = (-1 * game.playerBoard[x, y]).ToString();
+                    }
+                    boxes[x, y].TextChanged += new EventHandler(maskedTextBox_TextChanged);
+                    yCoord += 20;
+                    if ((y + 1) % 3 == 0) { yCoord += 3; }
+                }
+                xCoord += 20;
+                if ((x + 1) % 3 == 0) { xCoord += 3; }
+            }
+        }
+        
+        /// <summary>
+        /// Refresh the boxes[,] matrix after getting a hint or changing the difficulty
+        /// </summary>
+        private void RefreshBoard()
+        {
+            for(int i=0; i<9; i++)
+            {
+                for (int j=0; j<9; j++)
+                {
+                    if(game.playerBoard[i,j] < 0)
+                    {
+                        boxes[i, j].BackColor = SystemColors.MenuBar;
+                        boxes[i, j].Enabled = false;
+                        boxes[i, j].Text = (game.playerBoard[i, j].Equals(0)) ? string.Empty : game.playerBoard[i, j].ToString();
+                    }
+                }
+            }
+            splitContainer1.Panel1.Refresh();
+        }
+
+        /// <summary>
+        /// Insert a new value into the playerboard
+        /// Clearing a box inserts a 0, and doesn't count as a move
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void maskedTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (!gotHint)
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    bool valueInserted = false;
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (boxes[i, j].Equals((MaskedTextBox)sender))
+                        {
+                            int value = (boxes[i, j].Text == string.Empty) ? 0 : Convert.ToInt32(boxes[i, j].Text);
+                            //Insert the value
+                            valueInserted = game.MakeMove(value, i, j);
+
+                            //If hints are on, show incorrect moves
+                            if (showHints && !game.CheckSpot(i, j))
+                            {
+                                if (!value.Equals(0))
+                                {
+                                    boxes[i, j].BackColor = Color.OrangeRed;
+                                }
+                                else
+                                {
+                                    boxes[i, j].BackColor = Color.White;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    if (valueInserted) { break; }
+                }
+            }            
+        }
+
+        /// <summary>
+        /// Reveal and lock a correct value
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Hint_Click(object sender, EventArgs e)
+        {
+            gotHint = true;
+            game.Help();
+            RefreshBoard();
+            gotHint = false;
+        }
+
+        /// <summary>
+        /// Changing difficulties starts a new game with the new difficulty
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            newGame();
+        }
+
+        /// <summary>
+        /// Start a new game with the same difficulty
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            newGame();
+        }
+
+        /// <summary>
+        /// start a new game with the given difficulty setting
+        /// </summary>
+        private void newGame()
+        {
+            game = new Sudoku(trackBar1.Value);
+            boxes = new MaskedTextBox[9, 9];
+            splitContainer1.Panel1.Controls.Clear();
+            reinitBoxes();
+            RefreshBoard();
+        }
+
+        /// <summary>
+        /// Toggle realtime hints on/off
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            showHints = !showHints;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    if (boxes[i, j].Equals((MaskedTextBox)sender))
+                    //If hints are on, show incorrect moves
+                    if (showHints && !game.CheckSpot(i, j))
                     {
-                        game.playerBoard[i,j] = Convert.ToInt32(boxes[i,j].Text);
-                    }
-                }
-            }
+                        int value = (boxes[i, j].Text == string.Empty) ? 0 : Convert.ToInt32(boxes[i, j].Text);
 
-            if (showHints)
-            {
-                for(int i=0; i<9; i++)
-                {
-                    bool foundSpot = false;
-                    for(int j=0; j<9; j++)
-                    {
-                        if (boxes[i, j].Equals((MaskedTextBox)sender))
+                        if (!value.Equals(0))
                         {
-                            if (!game.CheckSpot(i, j))
-                            {
-                                boxes[i, j].BackColor = Color.OrangeRed;
-                            }
-                            foundSpot = true;
-                            break;
+                            boxes[i, j].BackColor = Color.OrangeRed;
                         }
-                        if (foundSpot) { break; }
+                        else
+                        {
+                            boxes[i, j].BackColor = SystemColors.Window;
+                        }
+                    }
+                    else
+                    {
+                        if (boxes[i, j].Enabled)
+                        {
+                            boxes[i, j].BackColor = SystemColors.Window;
+                        }
+                        else
+                        {
+                            boxes[i, j].BackColor = SystemColors.MenuBar;
+                        }
                     }
                 }
             }
-        }
-
-        //Force reveal a correct value
-        private void Hint_Click(object sender, EventArgs e)
-        {
-            //call backend random hint
-            //disable revealed spot
-            //call reload playre board
-        }
-
-        //changing difficulties starts a new game with the new difficulty
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            game = new Sudoku(trackBar1.Value);
-            InitializeComponent_withGridCoordinates();
         }
     }
 }

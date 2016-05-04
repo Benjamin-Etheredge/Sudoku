@@ -9,30 +9,41 @@ namespace Sudoku
     {
         public const int BOARD_SIZE = 9;
 
-        public const int MINIMUM_VALUE = 1;
+        public const int MINIMUM_VALUE = 0;
+        //In ValidateInput, needs to be 0 because clearing a textbox re-inserts a 0;
+        //In Help, has to be 0 so the hints include row & col 0
 
+        public int HINTS_LEFT;
+        //Different # of hints based on difficulty
 
         public int[,] solutionBoard;
         public int[,] playerBoard;
 
         public Random randomObject = new Random();
 
+        /// <summary>
+        /// Game Constructor
+        /// </summary>
+        /// <param name="difficulty"></param>
         public Sudoku (int difficulty)
         {
             this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE];
             this.playerBoard = new int[BOARD_SIZE, BOARD_SIZE];
             if (difficulty == 0)
             {
+                HINTS_LEFT = 7;
                 Array.Copy(Constants.EASY_PUZZLE_SOLUTION, solutionBoard, Constants.EASY_PUZZLE_SOLUTION.Length);
                 Array.Copy(Constants.EASY_PUZZLE, playerBoard, Constants.EASY_PUZZLE.Length);
             }
             else if (difficulty == 1)
             {
+                HINTS_LEFT = 5;
                 Array.Copy(Constants.MEDIUM_PUZZLE_SOLUTION, solutionBoard, Constants.MEDIUM_PUZZLE_SOLUTION.Length);
                 Array.Copy(Constants.MEDIUM_PUZZLE, playerBoard, Constants.MEDIUM_PUZZLE.Length);
             }
             else if (difficulty == 2)
             {
+                HINTS_LEFT = 3;
                 Array.Copy(Constants.HARD_PUZZLE_SOLUTION, solutionBoard, Constants.HARD_PUZZLE_SOLUTION.Length);
                 Array.Copy(Constants.HARD_PUZZLE, playerBoard, Constants.HARD_PUZZLE.Length);
             }
@@ -41,9 +52,11 @@ namespace Sudoku
                 throw new Exception("Not implemented yet");
             }
             SealBoards();
-
         }
 
+        /// <summary>
+        /// Locks the given correct values in playerBoard and all values in solutionBoard
+        /// </summary>
         public void SealBoards()
         {
             for (int i = 0; i < BOARD_SIZE; i++)
@@ -126,7 +139,7 @@ namespace Sudoku
             bool madeMove = false;
             if (ValidateInput(value, xCor, yCor))
             {
-                if (playerBoard[xCor, yCor] > 0)
+                if (playerBoard[xCor, yCor] >= 0)   //has to be >= because empty spots are = 0, unlocked full spots are > 0
                 {
                     this.playerBoard[xCor, yCor] = value;
                     madeMove = true;
@@ -136,27 +149,26 @@ namespace Sudoku
             return madeMove;
         }
 
-
+        /// <summary>
+        /// Inserts a correct value into a random space of playerBoard
+        /// </summary>
         public void Help()
         {
             bool hasHelped = false;
 
-            while (!hasHelped)
+            while (!hasHelped && (HINTS_LEFT > 0))
             {
                 // get new random cordinates
                 int randomX = randomObject.Next(MINIMUM_VALUE, BOARD_SIZE);
-                int randomY = randomObject.Next(MINIMUM_VALUE, BOARD_SIZE);
+                int randomY = randomObject.Next(MINIMUM_VALUE, BOARD_SIZE); 
 
-                if (playerBoard[randomX, randomY] > 0)
+                if (playerBoard[randomX, randomY] >= MINIMUM_VALUE) //has to be >= 0 because empty spots are = 0, unlocked full spots are > 0
                 {
                     playerBoard[randomX, randomY] = solutionBoard[randomX, randomY];
+                    hasHelped = true;   //need this line to exit loop
+                    HINTS_LEFT--;
                 }
             }
-            
-        }
-
-
-
-
+        }        
     }
 }
