@@ -12,15 +12,17 @@ namespace Sudoku
     public partial class Form1 : Form
     {
         private MaskedTextBox[,] boxes = new MaskedTextBox[9,9];
+        private bool showHints = false;
 
         public Form1()
         {
             InitializeComponent_withGridCoordinates();
         }
+
         private void InitializeComponent_withGridCoordinates()
         {
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            menuStrip1 = new MenuStrip();
+            splitContainer1 = new SplitContainer();
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
@@ -28,45 +30,45 @@ namespace Sudoku
                     boxes[x, y] = new MaskedTextBox();
                 }
             }
-            this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.SuspendLayout();
+            gameToolStripMenuItem = new ToolStripMenuItem();
+            newToolStripMenuItem = new ToolStripMenuItem();
+            restartToolStripMenuItem = new ToolStripMenuItem();
+            label4 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            trackBar1 = new TrackBar();
+            button1 = new Button();
+            label1 = new Label();
+            radioButton2 = new RadioButton();
+            radioButton1 = new RadioButton();
+            menuStrip1.SuspendLayout();
+            ((ISupportInitialize)(splitContainer1)).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((ISupportInitialize)(trackBar1)).BeginInit();
+            SuspendLayout();
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gameToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(215, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            menuStrip1.Items.AddRange(new ToolStripItem[] {
+            gameToolStripMenuItem});
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(215, 24);
+            menuStrip1.TabIndex = 0;
+            menuStrip1.Text = "menuStrip1";
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 24);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            splitContainer1.Panel1.BackColor = SystemColors.AppWorkspace;
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
@@ -77,17 +79,17 @@ namespace Sudoku
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.label4);
-            this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Panel2.Controls.Add(this.label2);
-            this.splitContainer1.Panel2.Controls.Add(this.trackBar1);
-            this.splitContainer1.Panel2.Controls.Add(this.button1);
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.radioButton2);
-            this.splitContainer1.Panel2.Controls.Add(this.radioButton1);
-            this.splitContainer1.Size = new System.Drawing.Size(215, 345);
-            this.splitContainer1.SplitterDistance = 209;
-            this.splitContainer1.TabIndex = 1;
+            splitContainer1.Panel2.Controls.Add(label4);
+            splitContainer1.Panel2.Controls.Add(label3);
+            splitContainer1.Panel2.Controls.Add(label2);
+            splitContainer1.Panel2.Controls.Add(trackBar1);
+            splitContainer1.Panel2.Controls.Add(button1);
+            splitContainer1.Panel2.Controls.Add(label1);
+            splitContainer1.Panel2.Controls.Add(radioButton2);
+            splitContainer1.Panel2.Controls.Add(radioButton1);
+            splitContainer1.Size = new Size(215, 345);
+            splitContainer1.SplitterDistance = 209;
+            splitContainer1.TabIndex = 1;
             //
             // boxes
             //
@@ -97,11 +99,16 @@ namespace Sudoku
                 int yCoord = 10;
                 for (int y = 0; y < 9; y++)
                 {
-                    boxes[x, y].Location = new System.Drawing.Point(yCoord, xCoord);
+                    boxes[x, y].Location = new Point(yCoord, xCoord);
                     boxes[x, y].Mask = "0";
                     boxes[x, y].Name = "maskedTextBox9";
-                    boxes[x, y].Size = new System.Drawing.Size(20, 20);
+                    boxes[x, y].Size = new Size(20, 20);
                     boxes[x, y].TabIndex = 97;
+                    //if(board[x,y] < 0)
+                    //{
+                    //    boxes[x, y].Text = board[x, y].ToString();
+                    //}
+                    boxes[x,y].TextChanged += new EventHandler(maskedTextBox_TextChanged);
                     yCoord += 20;
                     if ((y + 1) % 3 == 0) { yCoord += 3; }
                 }
@@ -111,122 +118,147 @@ namespace Sudoku
             // 
             // gameToolStripMenuItem
             // 
-            this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.restartToolStripMenuItem});
-            this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
-            this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            this.gameToolStripMenuItem.Text = "Game";
+            gameToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] {
+            newToolStripMenuItem,
+            restartToolStripMenuItem});
+            gameToolStripMenuItem.Name = "gameToolStripMenuItem";
+            gameToolStripMenuItem.Size = new Size(50, 20);
+            gameToolStripMenuItem.Text = "Game";
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.newToolStripMenuItem.Text = "New";
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.Size = new Size(152, 22);
+            newToolStripMenuItem.Text = "New";
             // 
             // restartToolStripMenuItem
             // 
-            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.restartToolStripMenuItem.Text = "Restart";
+            restartToolStripMenuItem.Name = "restartToolStripMenuItem";
+            restartToolStripMenuItem.Size = new Size(152, 22);
+            restartToolStripMenuItem.Text = "Restart";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(165, 98);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(30, 13);
-            this.label4.TabIndex = 15;
-            this.label4.Text = "Hard";
+            label4.AutoSize = true;
+            label4.Location = new Point(165, 98);
+            label4.Name = "label4";
+            label4.Size = new Size(30, 13);
+            label4.TabIndex = 15;
+            label4.Text = "Hard";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(23, 98);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(30, 13);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Easy";
+            label3.AutoSize = true;
+            label3.Location = new Point(23, 98);
+            label3.Name = "label3";
+            label3.Size = new Size(30, 13);
+            label3.TabIndex = 14;
+            label3.Text = "Easy";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(86, 67);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "Difficulty";
+            label2.AutoSize = true;
+            label2.Location = new Point(86, 67);
+            label2.Name = "label2";
+            label2.Size = new Size(47, 13);
+            label2.TabIndex = 13;
+            label2.Text = "Difficulty";
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(57, 83);
-            this.trackBar1.Maximum = 2;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(104, 45);
-            this.trackBar1.TabIndex = 12;
+            trackBar1.Location = new Point(57, 83);
+            trackBar1.Maximum = 2;
+            trackBar1.Name = "trackBar1";
+            trackBar1.Size = new Size(104, 45);
+            trackBar1.TabIndex = 12;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(127, 5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "Hint";
-            this.button1.UseVisualStyleBackColor = true;
+            button1.Location = new Point(127, 5);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 11;
+            button1.Text = "Hint";
+            button1.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Incorrect";
+            label1.AutoSize = true;
+            label1.Location = new Point(13, 5);
+            label1.Name = "label1";
+            label1.Size = new Size(49, 13);
+            label1.TabIndex = 10;
+            label1.Text = "Incorrect";
             // 
             // radioButton2
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Checked = true;
-            this.radioButton2.Location = new System.Drawing.Point(16, 44);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(47, 17);
-            this.radioButton2.TabIndex = 9;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Hide";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            radioButton2.AutoSize = true;
+            radioButton2.Checked = true;
+            radioButton2.Location = new Point(16, 44);
+            radioButton2.Name = "radioButton2";
+            radioButton2.Size = new Size(47, 17);
+            radioButton2.TabIndex = 9;
+            radioButton2.TabStop = true;
+            radioButton2.Text = "Hide";
+            radioButton2.UseVisualStyleBackColor = true;
             // 
             // radioButton1
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(16, 21);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(52, 17);
-            this.radioButton1.TabIndex = 8;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Show";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            radioButton1.AutoSize = true;
+            radioButton1.Location = new Point(16, 21);
+            radioButton1.Name = "radioButton1";
+            radioButton1.Size = new Size(52, 17);
+            radioButton1.TabIndex = 8;
+            radioButton1.TabStop = true;
+            radioButton1.Text = "Show";
+            radioButton1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(215, 369);
-            this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
-            this.Text = "Sudoku";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(6F, 13F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(215, 369);
+            Controls.Add(splitContainer1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
+            Name = "Form1";
+            Text = "Sudoku";
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
+            splitContainer1.Panel2.ResumeLayout(false);
+            splitContainer1.Panel2.PerformLayout();
+            ((ISupportInitialize)(splitContainer1)).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((ISupportInitialize)(trackBar1)).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        private void maskedTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (showHints)
+            {
+                for(int i=0; i<9; i++)
+                {
+                    for(int j=0; j<9; j++)
+                    {
+                        if (boxes[i, j].Equals((MaskedTextBox)sender))
+                        {
+                            //if(!checkSpot(Convert.ToInt32(boxes[i,j].Text), i, j))
+                            //{
+                            boxes[i, j].BackColor = Color.OrangeRed;
+                            //}
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Hint_Click(object sender, EventArgs e)
+        {
+            //call backend random hint
         }
     }
 }
