@@ -107,10 +107,10 @@ namespace Sudoku
                     boxes[x, y].Name = "maskedTextBox9";
                     boxes[x, y].Size = new Size(20, 20);
                     boxes[x, y].TabIndex = 97;
-                    //if(board[x,y] < 0)
-                    //{
-                    //    boxes[x, y].Text = board[x, y].ToString();
-                    //}
+                    if (game.playerBoard[x, y] < 0)
+                    {
+                        boxes[x, y].Text = (-1 * game.playerBoard[x, y]).ToString();
+                    }
                     boxes[x,y].TextChanged += new EventHandler(maskedTextBox_TextChanged);
                     yCoord += 20;
                     if ((y + 1) % 3 == 0) { yCoord += 3; }
@@ -174,6 +174,7 @@ namespace Sudoku
             trackBar1.Name = "trackBar1";
             trackBar1.Size = new Size(104, 45);
             trackBar1.TabIndex = 12;
+            trackBar1.Value = 0;
             // 
             // button1
             // 
@@ -248,7 +249,7 @@ namespace Sudoku
                 {
                     if (boxes[i, j].Equals((MaskedTextBox)sender))
                     {
-                        //set playerBoard[i,j] = input value;
+                        game.playerBoard[i,j] = Convert.ToInt32(boxes[i,j].Text);
                     }
                 }
             }
@@ -262,10 +263,10 @@ namespace Sudoku
                     {
                         if (boxes[i, j].Equals((MaskedTextBox)sender))
                         {
-                            //if(!checkSpot(i, j))
-                            //{
-                            boxes[i, j].BackColor = Color.OrangeRed;
-                            //}
+                            if (!game.CheckSpot(i, j))
+                            {
+                                boxes[i, j].BackColor = Color.OrangeRed;
+                            }
                             foundSpot = true;
                             break;
                         }
