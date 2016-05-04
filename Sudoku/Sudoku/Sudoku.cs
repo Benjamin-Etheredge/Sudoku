@@ -19,26 +19,41 @@ namespace Sudoku
 
         public Sudoku (int difficulty)
         {
+            this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE];
+            this.playerBoard = new int[BOARD_SIZE, BOARD_SIZE];
             if (difficulty == 0)
             {
-                this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.EASY_PUZZLE_SOLUTION);
-                this.playerBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.EASY_PUZZLE);
+                Array.Copy(Constants.EASY_PUZZLE_SOLUTION, solutionBoard, Constants.EASY_PUZZLE_SOLUTION.Length);
+                Array.Copy(Constants.EASY_PUZZLE, playerBoard, Constants.EASY_PUZZLE.Length);
             }
-            if (difficulty == 1)
+            else if (difficulty == 1)
             {
-                this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.MEDIUM_PUZZLE_SOLUTION);
-                this.playerBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.MEDIUM_PUZZLE);
+                Array.Copy(Constants.MEDIUM_PUZZLE_SOLUTION, solutionBoard, Constants.MEDIUM_PUZZLE_SOLUTION.Length);
+                Array.Copy(Constants.MEDIUM_PUZZLE, playerBoard, Constants.MEDIUM_PUZZLE.Length);
             }
-            if (difficulty == 2)
+            else if (difficulty == 2)
             {
-                this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.HARD_PUZZLE_SOLUTION);
-                this.playerBoard = new int[BOARD_SIZE, BOARD_SIZE](Constants.HARD_PUZZLE);
+                Array.Copy(Constants.HARD_PUZZLE_SOLUTION, solutionBoard, Constants.HARD_PUZZLE_SOLUTION.Length);
+                Array.Copy(Constants.HARD_PUZZLE, playerBoard, Constants.HARD_PUZZLE.Length);
             }
             else
             {
                 throw new Exception("Not implemented yet");
             }
+            SealBoards();
 
+        }
+
+        public void SealBoards()
+        {
+            for (int i = 0; i < BOARD_SIZE; i++)
+            {
+                for (int j = 0; j < BOARD_SIZE; j++)
+                {
+                    playerBoard[i, j] *= -1;
+                    solutionBoard[i, j] *= -1;
+                }
+            }
         }
 
         /// <summary>
@@ -52,7 +67,7 @@ namespace Sudoku
             {
                 for (int j = 0; j < BOARD_SIZE && isSolved; j++)
                 {
-                    if (playerBoard[i,j] != solutionBoard[i,j])
+                    if (Math.Abs(playerBoard[i,j]) != Math.Abs(solutionBoard[i,j]))
                     {
                         isSolved = false;
                     }
@@ -96,7 +111,7 @@ namespace Sudoku
         /// <returns>Whether that spot is correct or not</returns>
         public bool CheckSpot(int xCor, int yCor)
         {
-            return this.solutionBoard[xCor, yCor] == (this.playerBoard[xCor, yCor] * -1);
+            return Math.Abs(this.solutionBoard[xCor, yCor]) == Math.Abs((this.playerBoard[xCor, yCor])); 
         }
 
         /// <summary>
