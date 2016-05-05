@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//Amy Brown, Ben Etheredge, Benz McGahey
+//CS 315 - Spring 2016
+//Due: Tuesday May 4, 2016
+//Final project: Sudoku
 
+using System;
 namespace Sudoku
 {
     class Sudoku
     {
         public const int BOARD_SIZE = 9;
 
-        public const int MINIMUM_VALUE = 0;
         //In ValidateInput, needs to be 0 because clearing a textbox re-inserts a 0;
         //In Help, has to be 0 so the hints include row & col 0
+        public const int MINIMUM_VALUE = 0;
 
-        public int HINTS_LEFT;
         //Different # of hints based on difficulty
+        public int HINTS_LEFT;
 
         // boards to be utilized by program
         public int[,] solutionBoard;
@@ -25,6 +26,7 @@ namespace Sudoku
 
         /// <summary>
         /// Game Constructor
+        /// - Ben & Amy
         /// </summary>
         /// <param name="difficulty">Difficulty of board</param>
         public Sudoku (int difficulty)
@@ -58,6 +60,7 @@ namespace Sudoku
 
         /// <summary>
         /// Locks the given correct values in playerBoard and all values in solutionBoard
+        /// - Ben
         /// </summary>
         public void SealBoards()
         {
@@ -73,6 +76,7 @@ namespace Sudoku
 
         /// <summary>
         /// Determines if the board is correctly solved
+        /// - Ben & Amy
         /// </summary>
         /// <returns>Boolean value indicated whether the board is solved</returns>
         public bool IsSolved()
@@ -94,6 +98,7 @@ namespace Sudoku
 
         /// <summary>
         /// Validates input
+        /// - Ben
         /// </summary>
         /// <param name="value"></param>
         /// <param name="xCor"></param>
@@ -120,6 +125,7 @@ namespace Sudoku
 
         /// <summary>
         /// Checks if the players board is correct at corrdinates
+        /// - Ben
         /// </summary>
         /// <param name="xCor">x cordinate of spot to check</param>
         /// <param name="yCor">y cordinate of spot to check</param>
@@ -131,6 +137,7 @@ namespace Sudoku
 
         /// <summary>
         /// Makes the move designated by user
+        /// - Ben & Amy
         /// </summary>
         /// <param name="value">Value to be added to board</param>
         /// <param name="xCor">x cordinate of move</param>
@@ -153,6 +160,7 @@ namespace Sudoku
 
         /// <summary>
         /// Inserts a correct value into a random space of playerBoard
+        /// - Ben & Amy
         /// </summary>
         public void Help()
         {

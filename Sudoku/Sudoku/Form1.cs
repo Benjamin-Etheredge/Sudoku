@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//Amy Brown, Ben Etheredge, Benz McGahey
+//CS 315 - Spring 2016
+//Due: Tuesday May 4, 2016
+//Final project: Sudoku
+
+using System;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Sudoku
@@ -26,6 +27,7 @@ namespace Sudoku
 
         /// <summary>
         /// Setup form and reveal pre-locked values
+        /// - Amy
         /// </summary>
         private void InitializeComponent_withGridCoordinates()
         {
@@ -209,7 +211,7 @@ namespace Sudoku
             label1.Name = "label1";
             label1.Size = new Size(49, 13);
             label1.TabIndex = 10;
-            label1.Text = "Incorrect";
+            label1.Text = "Show Incorrect";
             // 
             // radioButton2
             // 
@@ -220,7 +222,7 @@ namespace Sudoku
             radioButton2.Size = new Size(47, 17);
             radioButton2.TabIndex = 9;
             radioButton2.TabStop = true;
-            radioButton2.Text = "Hide";
+            radioButton2.Text = "Off";
             radioButton2.UseVisualStyleBackColor = true;
             // 
             // radioButton1
@@ -231,7 +233,7 @@ namespace Sudoku
             radioButton1.Size = new Size(52, 17);
             radioButton1.TabIndex = 8;
             radioButton1.TabStop = true;
-            radioButton1.Text = "Show";
+            radioButton1.Text = "On";
             radioButton1.UseVisualStyleBackColor = true;
             radioButton1.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
             // 
@@ -271,6 +273,7 @@ namespace Sudoku
 
         /// <summary>
         /// Setup a new boxes[,] matrix when difficulty is changed
+        /// - Amy
         /// </summary>
         private void reinitBoxes()
         {
@@ -303,6 +306,7 @@ namespace Sudoku
         
         /// <summary>
         /// Refresh the boxes[,] matrix after getting a hint or changing the difficulty
+        /// - Amy
         /// </summary>
         private void RefreshBoard()
         {
@@ -310,6 +314,7 @@ namespace Sudoku
             {
                 for (int j=0; j<9; j++)
                 {
+                    //If this spot has a game-supplied value, lock it and grey it out
                     if(game.playerBoard[i,j] < 0)
                     {
                         boxes[i, j].BackColor = SystemColors.MenuBar;
@@ -324,11 +329,14 @@ namespace Sudoku
         /// <summary>
         /// Insert a new value into the playerboard
         /// Clearing a box inserts a 0, and doesn't count as a move
+        /// - Amy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void maskedTextBox_TextChanged(object sender, EventArgs e)
         {
+            //If the value is user-input, not hint-generated, check it
+            //We know the hints are always right
             if (!gotHint)
             {
                 for (int i = 0; i < 9; i++)
@@ -338,29 +346,53 @@ namespace Sudoku
                     {
                         if (boxes[i, j].Equals((MaskedTextBox)sender))
                         {
-                            int value = (boxes[i, j].Text == string.Empty) ? 0 : Convert.ToInt32(boxes[i, j].Text);
-                            //Insert the value
-                            valueInserted = game.MakeMove(value, i, j);
-
-                            //If hints are on, show incorrect moves
-                            if (showHints && !game.CheckSpot(i, j))
+                            //if player inserts 1-9
+                            if(boxes[i, j].Text != "0")
                             {
-                                if (!value.Equals(0))
+                                int value = (boxes[i, j].Text == string.Empty) ? 0 : Convert.ToInt32(boxes[i, j].Text);
+                                //Insert the value
+                                valueInserted = game.MakeMove(value, i, j);
+
+                                //If hints are on and this space is incorrect:
+                                if (showHints && !game.CheckSpot(i, j))
                                 {
-                                    boxes[i, j].BackColor = Color.OrangeRed;
+                                    //if it's incorrect, and not blank
+                                    if (!value.Equals(0))
+                                    {
+                                        boxes[i, j].BackColor = Color.OrangeRed;
+                                    }
+                                    //if it's incorrect because it's blank, leave it
+                                    else
+                                    {
+                                        boxes[i, j].BackColor = SystemColors.Window;
+                                    }
                                 }
+                                //locked spaces are greyed out
                                 else
                                 {
-                                    boxes[i, j].BackColor = Color.White;
+                                    if (boxes[i, j].Enabled)
+                                    {
+                                        boxes[i, j].BackColor = SystemColors.Window;
+                                    }
+                                    else
+                                    {
+                                        boxes[i, j].BackColor = SystemColors.MenuBar;
+                                    }
                                 }
+                                break;
                             }
-                            break;
+                            //if player types a 0, it's wrong - don't both inserting and checking.
+                            else
+                            {
+                                boxes[i, j].BackColor = Color.OrangeRed;
+                            }
                         }
                     }
                     if (valueInserted) { break; }
                 }
             }
-                if (game.IsSolved())
+            //Check for solve
+            if (game.IsSolved())
             {
                 label5.Visible = true;
                 splitContainer1.Panel1.Refresh();
@@ -369,6 +401,7 @@ namespace Sudoku
 
         /// <summary>
         /// Reveal and lock a correct value
+        /// -Amy & Ben
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -384,6 +417,7 @@ namespace Sudoku
 
         /// <summary>
         /// Changing difficulties starts a new game with the new difficulty
+        /// - Amy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -394,6 +428,7 @@ namespace Sudoku
 
         /// <summary>
         /// Start a new game with the same difficulty
+        /// - Amy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -404,6 +439,7 @@ namespace Sudoku
 
         /// <summary>
         /// start a new game with the given difficulty setting
+        /// - Amy
         /// </summary>
         private void newGame()
         {
@@ -417,7 +453,8 @@ namespace Sudoku
         }
 
         /// <summary>
-        /// Toggle realtime hints on/off
+        /// Toggle "show incorrect" on/off
+        /// - Amy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -437,11 +474,20 @@ namespace Sudoku
                         {
                             boxes[i, j].BackColor = Color.OrangeRed;
                         }
+                        //locked spaces are greyed out
                         else
                         {
-                            boxes[i, j].BackColor = SystemColors.Window;
+                            if (boxes[i, j].Enabled)
+                            {
+                                boxes[i, j].BackColor = SystemColors.Window;
+                            }
+                            else
+                            {
+                                boxes[i, j].BackColor = SystemColors.MenuBar;
+                            }
                         }
                     }
+                    //locked spaces are greyed out
                     else
                     {
                         if (boxes[i, j].Enabled)

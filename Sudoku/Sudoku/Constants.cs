@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//Amy Brown, Ben Etheredge, Benz McGahey
+//CS 315 - Spring 2016
+//Due: Tuesday May 4, 2016
+//Final project: Sudoku
 
 namespace Sudoku
 {
     class Constants
     {
         //List of puzzle values and their solutions
+        //Benz
 
         public static readonly int[,] EASY_PUZZLE = {  {0,0,0,2,6,0,7,0,1}, {6,8,0,0,7,0,0,9,0}, {1,9,0,0,0,4,5,0,0} ,
                                               {8,2,0,1,0,0,0,4,0}, {0,0,4,6,0,2,9,0,0}, {0,5,0,0,0,3,0,2,8} ,
@@ -32,7 +33,5 @@ namespace Sudoku
         public static readonly int[,] HARD_PUZZLE_SOLUTION = { {5,8,1,6,7,2,4,3,9}, {7,9,2,8,4,3,6,5,1}, {3,6,4,5,9,1,7,8,2},
                                                 {4,3,8,9,5,7,2,1,6}, {2,5,6,1,8,4,9,7,3}, {1,7,9,3,2,6,8,4,5},
                                                 {8,4,5,2,1,9,3,6,7}, {9,1,3,7,6,8,5,2,4}, {6,2,7,4,3,5,1,9,8} };
-
-        
     }
 }

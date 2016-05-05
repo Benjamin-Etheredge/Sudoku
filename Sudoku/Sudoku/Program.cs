@@ -1,6 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿//Amy Brown, Ben Etheredge, Benz McGahey
+//CS 315 - Spring 2016
+//Due: Tuesday May 4, 2016
+//Final project: Sudoku
+
+using System;
 using System.Windows.Forms;
 
 namespace Sudoku
