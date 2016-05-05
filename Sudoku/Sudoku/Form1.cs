@@ -40,6 +40,7 @@ namespace Sudoku
             }
             gameToolStripMenuItem = new ToolStripMenuItem();
             restartToolStripMenuItem = new ToolStripMenuItem();
+            label6 = new Label();
             label5 = new Label();
             label4 = new Label();
             label3 = new Label();
@@ -88,6 +89,7 @@ namespace Sudoku
             // splitContainer1.Panel2
             // 
             splitContainer1.IsSplitterFixed = true;
+            splitContainer1.Panel2.Controls.Add(label6);
             splitContainer1.Panel1.Controls.Add(label5);
             splitContainer1.Panel2.Controls.Add(label4);
             splitContainer1.Panel2.Controls.Add(label3);
@@ -233,6 +235,15 @@ namespace Sudoku
             radioButton1.UseVisualStyleBackColor = true;
             radioButton1.CheckedChanged += new EventHandler(radioButton_CheckedChanged);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(137, 31);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(55, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "7 hints left";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
@@ -353,7 +364,6 @@ namespace Sudoku
             {
                 label5.Visible = true;
                 splitContainer1.Panel1.Refresh();
-                //MessageBox.Show("You solved the puzzle!");
             }
         }
 
@@ -367,6 +377,8 @@ namespace Sudoku
             gotHint = true;
             game.Help();
             RefreshBoard();
+            label6.Text = game.HINTS_LEFT.ToString() + " hints left";
+            splitContainer1.Panel2.Refresh();
             gotHint = false;
         }
 
@@ -400,6 +412,8 @@ namespace Sudoku
             splitContainer1.Panel1.Controls.Clear();
             reinitBoxes();
             RefreshBoard();
+            label6.Text = game.HINTS_LEFT.ToString() + " hints left";
+            splitContainer1.Panel2.Refresh();
         }
 
         /// <summary>
