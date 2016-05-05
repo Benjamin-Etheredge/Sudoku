@@ -16,15 +16,17 @@ namespace Sudoku
         public int HINTS_LEFT;
         //Different # of hints based on difficulty
 
+        // boards to be utilized by program
         public int[,] solutionBoard;
         public int[,] playerBoard;
 
+        // For generating random hints
         public Random randomObject = new Random();
 
         /// <summary>
         /// Game Constructor
         /// </summary>
-        /// <param name="difficulty"></param>
+        /// <param name="difficulty">Difficulty of board</param>
         public Sudoku (int difficulty)
         {
             this.solutionBoard = new int[BOARD_SIZE, BOARD_SIZE];
